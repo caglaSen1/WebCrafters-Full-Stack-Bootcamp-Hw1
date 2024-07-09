@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" />
+        <title>Movies</title>
+
+        <style>
+            body {
+                font-family: Arial, Helvetica, sans-serif;
+                background-color: #d3d8db;
+                padding: 20px;
+            }
+
+            .movie-image {
+                width: 100px;
+                height: 150px;
+                object-fit: cover;
+            }
+
+            .movie-card {
+                margin-bottom: 20px;
+            }
+
+            .card {
+                height: 400px; 
+                width: 400px;
+            }
+
+            .card-img-top {
+                height: 200px; 
+                object-fit: cover;
+            }
+
+            .watched-card {
+                border-left: 5px solid green;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1 class="mb-4 text-center">Film Arşivi</h1>
+
+            <div class="mb-3">
+                <label for="movieName" class="form-label">Film Adı:</label>
+                <input type="text" class="form-control" id="movieName" />
+            </div>
+            <div class="mb-3">
+                <label for="imageUrl" class="form-label">Film URL:</label>
+                <input type="text" class="form-control" id="imageUrl" />
+            </div>
+
+            <button class="btn w-100 mb-4" style="background-color: green; color: white;" onclick="addMovie()">Filmi Ekle</button>
+
+            <h2 class="mt-4">İzlenecek Filmler</h2>
+            <div id="movieList" class="row"></div>
+
+            <h2 class="mt-4">İzlenen Filmler</h2>
+            <div id="watchedList" class="row"></div>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+        <script>
+            function addMovie() {
+                var movieName = document.getElementById("movieName").value;
+                var imageUrl = document.getElementById("imageUrl").value;
+
+                if (movieName.trim() === "" || imageUrl.trim() === "") {
+                    alert("Lütfen film adı ve resim URL'si girin.");
+                    return;
+                }
+
+                var movieList = document.getElementById("movieList");
+                var listItem = document.createElement("div");
+                listItem.className = "col-md-4 movie-card";
+
+                var card = document.createElement("div");
+                card.className = "card h-100";
+
+                var movieImg = document.createElement("img");
+                movieImg.src = imageUrl;
+                movieImg.alt = movieName;
+                movieImg.className = "card-img-top w-100";
+
+                var cardBody = document.createElement("div");
+                cardBody.className = "card-body d-flex flex-column justify-content-between";
+
+                var title = document.createElement("h5");
+                title.className = "card-title";
+                title.textContent = movieName;
+
+                var buttons = document.createElement("div");
+                buttons.className = "mt-3";
+                buttons.innerHTML = `
+                <button class="btn btn-success w-100 mb-2" onclick="watchMovie(this)">İzlendi</button>
+                <button class="btn btn-danger w-100" onclick="removeMovie(this)">Kaldır</button>`;
+
+                cardBody.appendChild(title);
+                cardBody.appendChild(buttons);
+                card.appendChild(movieImg);
+                card.appendChild(cardBody);
+                listItem.appendChild(card);
+
+                movieList.appendChild(listItem);
+
+                document.getElementById("movieName").value = "";
+                document.getElementById("imageUrl").value = "";
+            }
+
+            function watchMovie(button) {
+                var listItem = button.closest(".movie-card");
+                var watchedList = document.getElementById("watchedList");
+                var emotion = prompt("Filmle alakalı görüşlerinizi yazınız:");
+
+                var card = listItem.querySelector(".card");
+                card.classList.add("watched-card");
+
+                var cardBody = card.querySelector(".card-body");
+                var title = cardBody.querySelector(".card-title");
+
+                var emotionText = document.createElement("p");
+                emotionText.className = "mt-3";
+                emotionText.innerHTML = `<strong>Görüşler:</strong> ${emotion}`;
+
+                var cloneTitle = document.createElement("h5");
+                cloneTitle.textContent = title.textContent;
+                cloneTitle.classList.add("text-danger");
+
+                cardBody.innerHTML = "";
+                cardBody.appendChild(cloneTitle);
+                cardBody.appendChild(emotionText);
+
+                watchedList.appendChild(listItem);
+            }
+
+            function removeMovie(button) {
+                var listItem = button.closest(".movie-card");
+                listItem.remove();
+            }
+        </script>
+    </body>
+</html>
